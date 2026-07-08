@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="WorldRank/WorldRank.Console.csproj" />
   <Project Path="WorldRank/WorldRank.csproj" />
 </Solution>

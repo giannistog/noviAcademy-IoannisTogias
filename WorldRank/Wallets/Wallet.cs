@@ -1,25 +1,33 @@
-﻿using WorldRank.Console.Enums;
+﻿using NLog;
+using WorldRank.Console.Enums;
+using WorldRank.Console.Exceptions;
 
 namespace WorldRank.Console
 {
 	public class Wallet
 	{
-		public decimal Balance { get; private set; }
+        Logger logger = LogManager.GetCurrentClassLogger();
+        public decimal Balance { get; private set; }
 		public Currency Currency;
 		public bool IsBlocked;
 
 		public Wallet(decimal balance, Currency currency, bool isBlocked)
 		{
+
+           
 			Balance = balance;
 			Currency = currency;
-			IsBlocked = false;
-		}
+			IsBlocked = isBlocked;
+
+            logger.Debug("Created wallet: {Wallet}", this);
+        }
 
 		public void SetBalance(decimal balance)
 		{
 			if (balance < 0)
 			{
-				return;
+				logger.Error("Attempted to set negative balance ({balance}) on ({Currency}) currency wallet.", balance, Currency);
+				throw new WorldRank.Console.Exceptions.InsufficientFundsException("Balance cannot be negative.");
 			}
 			Balance = balance;
 		}

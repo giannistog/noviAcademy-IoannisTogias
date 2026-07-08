@@ -1,11 +1,21 @@
 ﻿using WorldRank.Console;
 using WorldRank.Console.Enums;
+using WorldRank.Console.Exceptions;
+using NLog;
 
+var logger = LogManager.GetCurrentClassLogger();
+
+logger.Info("App started");
+logger.Warn("This is a warning");
+logger.Error("Something broke");
+
+//LogManager.Shutdown();
 var players = new List<Player>();
 var nextId = 1;
 //Create an instance of our WalletRepositoy passing the player list
 IWalletRepository walletRepository = new InMemoryWalletRepository(players);
 IPlayerRepository playerRepository = new InMemoryPlayerRepository(players);
+
 
 while (true)
 {
@@ -23,17 +33,19 @@ while (true)
 		"1" => AddPlayer,
 		"2" => ListPlayers,
 		"3" => FindPlayer,
-		//New functionality
+		
 		"4" => AddWalletToPlayer,
 		"5" => GetWalletOfPlayer,
 		"0" => null,
 		_ => () => Console.WriteLine("Unknown option.")
 	};
 
-	if (action is null)
-		return; // "0" selected — exit
-
-	action();
+	if (action is null) { 
+	logger.Info("WorldRank application closed");
+	LogManager.Shutdown();
+	return; // "0" selected — exit
+}
+    action();
 }
 
 #region Player Methods
@@ -45,7 +57,8 @@ void AddPlayer()
 	if (string.IsNullOrWhiteSpace(name))
 	{
 		Console.WriteLine("Name cannot be empty.");
-		return;
+		logger.Error("Attempted to create new Player: Failed. (null or empty)");
+		throw new WorldRank.Console.Exceptions.InvalidPlayerNameException("Name must not be null or empty.");
 	}
 
 	Console.Write("Score: ");
@@ -53,8 +66,9 @@ void AddPlayer()
 	if (!int.TryParse(scoreInput, out var score))
 	{
 		Console.WriteLine("Score must be a whole number.");
-		return;
-	}
+        logger.Error("Attempted to add player's score: Failed. (not a whole nubmer)");
+		throw new InvalidPlayerScoreException("Name must be a whole number.");
+    }
 
 	var player = new Player(nextId++, name);
 	player.UpdateScore(score);
@@ -67,7 +81,8 @@ void ListPlayers()
 	if (players.Count == 0)
 	{
 		Console.WriteLine("No players registered.");
-		return;
+        logger.Info("Attempted to print an empty players list.");
+        return;
 	}
 
 	foreach (var p in players)
@@ -79,14 +94,14 @@ void FindPlayer()
 	Console.Write("Search by name: ");
 	var term = Console.ReadLine() ?? string.Empty;
 
-	var player = players
-			.FirstOrDefault(p => p.Name.Equals(term, StringComparison.OrdinalIgnoreCase));
+	var player = players.FirstOrDefault(p => p.Name.Equals(term, StringComparison.OrdinalIgnoreCase));
 
 	if (player is null)
 	{
 		Console.WriteLine("No player found.");
-		return;
-	}
+        logger.Error("Attempted to find player: Failed. (null)");
+		throw new NullPlayerException("Player's name must be in players list");
+    }
 
 	Console.WriteLine(player);
 }
@@ -106,8 +121,9 @@ void FindPlayerById()
 	if (player is null)
 	{
 		Console.WriteLine("No player found.");
-		return;
-	}
+        logger.Error("Attempted to find player: Failed. (null)");
+        throw new NullPlayerException("Player's name must be in players list");
+    }
 
 	Console.WriteLine(player);
 }
@@ -156,6 +172,7 @@ void AddWalletToPlayer()
 	int.TryParse(id, out var playerId);
 	{
 		walletRepository.Add(new Wallet(10, cur, false), playerId);
+		logger.Info("Added new wallet");
 	}
 }
 
@@ -180,3 +197,4 @@ void GetWalletOfPlayer()
 }
 
 #endregion Wallet Methods
+
