@@ -221,4 +221,17 @@ public class WalletService
 			Console.WriteLine($"Error: {ex.Message}");
 		}
 	}
+    /*private int GenerateWalletId()
+    {
+        var existingIds = _walletRepository.GetAllWalletsByPlayerId().Select(p => p.Id).ToHashSet();
+
+        int id;
+        do
+        {
+            id = Random.Shared.Next(1, int.MaxValue);
+        }
+        while (existingIds.Contains(id));
+
+        return id;
+    }*/
 }
