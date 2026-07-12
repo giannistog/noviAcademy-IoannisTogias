@@ -20,4 +20,8 @@ public interface IWalletRepository
 	void Block(int playerId, Currency currency);
 
 	void Unblock(int playerId, Currency currency);
+
+
+    Wallet[] GetAll();
+    
 }

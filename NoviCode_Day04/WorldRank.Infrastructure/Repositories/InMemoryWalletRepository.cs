@@ -78,4 +78,9 @@ public class InMemoryWalletRepository : IWalletRepository
 
 		return wallet;
 	}
+
+    public Wallet[] GetAll()
+    {
+        return _wallets.ToArray();
+    }
 }

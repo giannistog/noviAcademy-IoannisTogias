@@ -13,11 +13,11 @@ namespace WorldRank.Infrastructure.Persistence.Context
         public DbSet<Player> Players { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
 
-        public WorldRankDbContext(DbContextOptions<WorldRankDbContext> options)
+        public WorldRankDbContext(DbContextOptions<WorldRankDbContext> options):base(options)
         {
 
         }
-        public void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Player>(x =>
             {
@@ -27,6 +27,18 @@ namespace WorldRank.Infrastructure.Persistence.Context
                 x.Property(y => y.Name).HasMaxLength(100).IsRequired();
                 x.Property(y => y.Score).IsRequired();
             });
-            base .OnModelCreating(modelBuilder);
+            
+
+            modelBuilder.Entity<Wallet>(x =>
+            {
+                x.ToTable("Wallets");
+                x.HasKey(w => w.Id);
+                x.Property(w => w.Id).ValueGeneratedNever(); // εσύ παράγεις τα ids, όχι η βάση
+                x.Property(w => w.PlayerId).IsRequired();  
+                x.Property(w => w.Balance).HasColumnType("decimal(18,2)").IsRequired();
+                x.Property(w => w.Currency).IsRequired();
+                x.Property(w => w.IsBlocked).IsRequired();
+            });
+            base.OnModelCreating(modelBuilder);
         }
     } }

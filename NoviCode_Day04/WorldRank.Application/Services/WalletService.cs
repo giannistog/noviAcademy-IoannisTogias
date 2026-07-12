@@ -46,7 +46,7 @@ public class WalletService
 			if (_playerRepository.FindPlayer(playerId.Value) is null)
 				throw new PlayerNotFoundException(playerId.Value);
 
-			var wallet = new Wallet(playerId.Value, currency.Value, balance.Value);
+			var wallet = new Wallet(GenerateWalletId(),playerId.Value, currency.Value, balance.Value);
 			_walletRepository.Add(wallet);
 			Console.WriteLine("Wallet added successfully.");
 		}
@@ -221,9 +221,9 @@ public class WalletService
 			Console.WriteLine($"Error: {ex.Message}");
 		}
 	}
-    /*private int GenerateWalletId()
+    private int GenerateWalletId()
     {
-        var existingIds = _walletRepository.GetAllWalletsByPlayerId().Select(p => p.Id).ToHashSet();
+        var existingIds = _walletRepository.GetAll().Select(p => p.Id).ToHashSet();
 
         int id;
         do
@@ -233,5 +233,6 @@ public class WalletService
         while (existingIds.Contains(id));
 
         return id;
-    }*/
+    }
+
 }

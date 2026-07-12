@@ -24,7 +24,7 @@ public static class DependencyInjection
 
 		services.AddApplication();
 		services.AddInfrastructure();
-        services.AddDbContext<WorldRankDbContext>(options => { options.UseSqlServer("Server=localhost;Database=WorldRank") });
+        services.AddDbContext<WorldRankDbContext>(options => { options.UseSqlServer("Server=localhost;Database=WorldRank"); });
 
 		return services;
 	}
