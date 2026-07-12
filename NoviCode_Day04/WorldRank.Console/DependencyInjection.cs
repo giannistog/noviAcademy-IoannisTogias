@@ -11,7 +11,7 @@ namespace WorldRank.Console;
 public static class DependencyInjection
 {
 	// Composition root: wires up every layer's services in one place.
-	public static IServiceCollection AddWorldRank(this IServiceCollection services)
+	public static IServiceCollection AddWorldRank(this IServiceCollection services, bool useDatabase = false)
 	{
 		// Microsoft.Extensions.Logging with NLog as the provider, so components
 		// can receive an ILogger<T> through constructor injection.
@@ -23,8 +23,8 @@ public static class DependencyInjection
 		});
 
 		services.AddApplication();
-		services.AddInfrastructure();
-        services.AddDbContext<WorldRankDbContext>(options => { options.UseSqlServer("Server=localhost;Database=WorldRank"); });
+		services.AddInfrastructure(useDatabase);
+        services.AddDbContext<WorldRankDbContext>(options => { options.UseSqlServer("Server=localhost;Database=WorldRank;Integrated Security=true;TrustServerCertificate=true"); });
 
 		return services;
 	}

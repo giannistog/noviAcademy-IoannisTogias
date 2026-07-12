@@ -33,7 +33,7 @@ namespace WorldRank.Infrastructure.Persistence.Context
             {
                 x.ToTable("Wallets");
                 x.HasKey(w => w.Id);
-                x.Property(w => w.Id).ValueGeneratedNever(); // εσύ παράγεις τα ids, όχι η βάση
+                x.Property(w => w.Id).ValueGeneratedNever(); 
                 x.Property(w => w.PlayerId).IsRequired();  
                 x.Property(w => w.Balance).HasColumnType("decimal(18,2)").IsRequired();
                 x.Property(w => w.Currency).IsRequired();

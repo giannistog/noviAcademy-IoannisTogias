@@ -23,5 +23,8 @@ public interface IWalletRepository
 
 
     Wallet[] GetAll();
-    
+
+    void Save(); //new method to save data in the database, retainable even after solution closes
+
+
 }

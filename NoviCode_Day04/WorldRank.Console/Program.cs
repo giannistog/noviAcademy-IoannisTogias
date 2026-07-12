@@ -7,7 +7,7 @@ var logger = LogManager.GetCurrentClassLogger();
 
 // Composition root: register every layer's services, then build the container.
 var services = new ServiceCollection();
-services.AddWorldRank();
+services.AddWorldRank(useDatabase:true);
 
 using var provider = services.BuildServiceProvider();
 

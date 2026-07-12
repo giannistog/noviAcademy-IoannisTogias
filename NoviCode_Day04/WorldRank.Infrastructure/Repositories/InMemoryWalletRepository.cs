@@ -83,4 +83,6 @@ public class InMemoryWalletRepository : IWalletRepository
     {
         return _wallets.ToArray();
     }
+
+    public void Save() { } //non-op
 }
