@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="NoviCode.Api/NoviCode.Api.csproj">
+    <BuildDependency Project="NoviCode.Domain/NoviCode.Domain.csproj" />
+  </Project>
+  <Project Path="NoviCode.Application/NoviCode.Application.csproj" />
+  <Project Path="NoviCode.Domain/NoviCode.Domain.csproj" />
+  <Project Path="NoviCode.Infrastructure/NoviCode.Infrastructure.csproj" />
+</Solution>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,13 @@ public class DBPlayerRepository : IPlayerRepository
 {
     private readonly WorldRankDbContext _context;
     private readonly ILogger<DBPlayerRepository> _logger;
+    private readonly IMemoryCache _cache;
 
-    public DBPlayerRepository(WorldRankDbContext context, ILogger<DBPlayerRepository> logger)
+    public DBPlayerRepository(WorldRankDbContext context, ILogger<DBPlayerRepository> logger /*IMemoryCache cache*/)
     {
         _context = context;
         _logger = logger;
+        //_cache = cache;
     }
 
     public void AddPlayer(Player player)
@@ -33,6 +36,22 @@ public class DBPlayerRepository : IPlayerRepository
     {
         return _context.Players.AsNoTracking().ToList();
     }
+
+    /*public IEnumerable<Player> GetAllPlayers()
+    {
+        if (_cache.TryGetValue("AllPlayersKey", out IReadOnlyList<Player>? cached) && cached is not null)
+        {
+            _logger.LogInformation("Cache HIT  all players");
+            return cached;
+        }
+
+        _logger.LogInformation("Cache MISS all players — loading from database");
+        var players = _players.toList();
+
+        _cache.Set("AllPlayersKey", players, TimeSpan.FromSeconds(60));
+
+        return players;
+    }*/
 
     public void DeletePlayer(int playerId)
     {
