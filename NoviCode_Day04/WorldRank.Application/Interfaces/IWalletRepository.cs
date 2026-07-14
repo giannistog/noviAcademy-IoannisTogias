@@ -5,26 +5,28 @@ namespace WorldRank.Application.Interfaces;
 
 public interface IWalletRepository
 {
-	void Add(Wallet wallet);
+    Task Add(Wallet wallet, CancellationToken ct = default);
 
-	List<Wallet> GetAllWalletsByPlayerId(int playerId);
+    Task<List<Wallet>> GetAllWalletsByPlayerId(int playerId, CancellationToken ct = default);
 
-	Wallet GetWallet(int playerId, Currency currency);
+    Task<Wallet> GetWallet(int playerId, Currency currency, CancellationToken ct = default);
 
-	void UpdateBalance(int playerId, Currency currency, decimal newBalance);
+    Task UpdateBalance(int playerId, Currency currency, decimal newBalance, CancellationToken ct = default);
 
-	void Deposit(int playerId, Currency currency, decimal amount);
+    Task Deposit(int playerId, Currency currency, decimal amount, CancellationToken ct = default);
 
-	void Withdraw(int playerId, Currency currency, decimal amount);
+    Task Withdraw(int playerId, Currency currency, decimal amount, CancellationToken ct = default);
 
-	void Block(int playerId, Currency currency);
+    Task Block(int playerId, Currency currency, CancellationToken ct = default);
 
-	void Unblock(int playerId, Currency currency);
+    Task Unblock(int playerId, Currency currency, CancellationToken ct = default);
+
+    Task<Wallet[]> GetAll(CancellationToken ct = default);
+
+    Task Save(CancellationToken ct = default);
+    
 
 
-    Wallet[] GetAll();
 
-    void Save(); //new method to save data in the database, retainable even after solution closes
-
-
+	
 }

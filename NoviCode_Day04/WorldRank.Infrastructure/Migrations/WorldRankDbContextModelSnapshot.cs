@@ -58,7 +58,20 @@ namespace WorldRank.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PlayerId");
+
                     b.ToTable("Wallets", (string)null);
+                });
+
+            modelBuilder.Entity("WorldRank.Domain.Entities.Wallet", b =>
+                {
+                    b.HasOne("WorldRank.Domain.Entities.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Player");
                 });
 #pragma warning restore 612, 618
         }

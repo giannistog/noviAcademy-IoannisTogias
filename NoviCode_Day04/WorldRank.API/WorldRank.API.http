@@ -1,0 +1,44 @@
+@baseUrl = https://localhost:7000
+
+### Create a player
+POST {{baseUrl}}/players
+Content-Type: application/json
+
+{
+  "name": "Alice",
+  "score": 10
+}
+
+### Get all players
+GET {{baseUrl}}/players
+
+### Get player by id (change 1 to a real id from the create response)
+GET {{baseUrl}}/players/1
+
+### Create a wallet for that player
+POST {{baseUrl}}/wallets
+Content-Type: application/json
+
+{
+  "playerId": 1,
+  "currency": "EUR",
+  "initialBalance": 100
+}
+
+### Get wallet by id (change 1 to a real id from the create response)
+GET {{baseUrl}}/wallets/1
+
+### Deposit funds
+POST {{baseUrl}}/wallets/1/deposit
+Content-Type: application/json
+
+{
+  "currency": "EUR",
+  "amount": 50
+}
+
+### Get wallet again — should reflect the updated balance, and should be a cache HIT
+GET {{baseUrl}}/wallets/1
+
+### Get non-existent wallet — should be 404
+GET {{baseUrl}}/wallets/9999
