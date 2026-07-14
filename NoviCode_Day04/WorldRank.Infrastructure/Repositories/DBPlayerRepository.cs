@@ -16,13 +16,116 @@ public class DBPlayerRepository : IPlayerRepository
 {
     private readonly WorldRankDbContext _context;
     private readonly ILogger<DBPlayerRepository> _logger;
-    private readonly IMemoryCache _cache;
 
-    public DBPlayerRepository(WorldRankDbContext context, ILogger<DBPlayerRepository> logger /*IMemoryCache cache*/)
+    public DBPlayerRepository(WorldRankDbContext context, ILogger<DBPlayerRepository> logger)
     {
         _context = context;
         _logger = logger;
-        //_cache = cache;
+    }
+
+    public async Task AddPlayer(Player player, CancellationToken ct = default)
+    {
+        _context.Players.Add(player);
+        await _context.SaveChangesAsync(ct);
+        _logger.LogInformation("Player {PlayerId} ({Name}) added with score {Score}", player.Id, player.Name, player.Score);
+    }
+
+    public async Task<IEnumerable<Player>> GetAllPlayers(CancellationToken ct = default)
+    {
+        return await _context.Players.AsNoTracking().ToListAsync(ct);
+    }
+
+    public async Task DeletePlayer(int playerId, CancellationToken ct = default)
+    {
+        var player = await _context.Players.FirstOrDefaultAsync(p => p.Id == playerId, ct);
+
+        if (player is null)
+        {
+            _logger.LogWarning("Delete skipped: player {PlayerId} not found", playerId);
+            return;
+        }
+
+        _context.Players.Remove(player);
+        await _context.SaveChangesAsync(ct);
+        _logger.LogInformation("Player {PlayerId} deleted", playerId);
+    }
+
+    public async Task<Player?> FindPlayer(int playerId, CancellationToken ct = default)
+    {
+        return await _context.Players.FirstOrDefaultAsync(p => p.Id == playerId, ct);
+    }
+
+    public async Task<IEnumerable<IGrouping<int, Player>>> GroupPlayersByScore(CancellationToken ct = default)
+    {
+        var players = await _context.Players.AsNoTracking().ToListAsync(ct);
+
+        return players
+            .GroupBy(player => player.Score)
+            .OrderByDescending(group => group.Key);
+    }
+    /*
+    private readonly WorldRankDbContext _context;
+    private readonly ILogger<DBPlayerRepository> _logger;
+
+    public DBPlayerRepository(WorldRankDbContext context, ILogger<DBPlayerRepository> logger)
+    {
+        _context = context;
+        _logger = logger;
+    }
+
+    public async Task AddPlayer(Player player, CancellationToken ct = default)
+    {
+        _context.Players.Add(player);
+        await _context.SaveChangesAsync(ct);
+        _logger.LogInformation("Player {PlayerId} ({Name}) added with score {Score}", player.Id, player.Name, player.Score);
+    }
+
+    public async Task<IEnumerable<Player>> GetAllPlayers(CancellationToken ct = default)
+    {
+        return await _context.Players.AsNoTracking().ToListAsync(ct);
+    }
+
+    public async Task DeletePlayer(int playerId, CancellationToken ct = default)
+    {
+        var player = await _context.Players.FirstOrDefaultAsync(p => p.Id == playerId, ct);
+
+        if (player is null)
+        {
+            _logger.LogWarning("Delete skipped: player {PlayerId} not found", playerId);
+            return;
+        }
+
+        _context.Players.Remove(player);
+        await _context.SaveChangesAsync(ct);
+        _logger.LogInformation("Player {PlayerId} deleted", playerId);
+    }
+
+    public async Task<Player?> FindPlayer(int playerId, CancellationToken ct = default)
+    {
+        return await _context.Players.FirstOrDefaultAsync(p => p.Id == playerId, ct);
+    }
+
+    public async Task<IEnumerable<IGrouping<int, Player>>> GroupPlayersByScore(CancellationToken ct = default)
+    {
+        var players = await _context.Players.AsNoTracking().ToListAsync(ct);
+
+        return players
+            .GroupBy(player => player.Score)
+            .OrderByDescending(group => group.Key);
+    }
+}
+
+public class DBPlayerRepository : IPlayerRepository
+{
+    private readonly WorldRankDbContext _context;
+    private readonly ILogger<DBPlayerRepository> _logger;
+    private readonly IMemoryCache _cache;
+
+    public DBPlayerRepository(WorldRankDbContext context, ILogger<DBPlayerRepository> logger )
+    {
+        _context = context;
+        _logger = logger;
+        
     }
 
     public void AddPlayer(Player player)
@@ -37,22 +140,7 @@ public class DBPlayerRepository : IPlayerRepository
         return _context.Players.AsNoTracking().ToList();
     }
 
-    /*public IEnumerable<Player> GetAllPlayers()
-    {
-        if (_cache.TryGetValue("AllPlayersKey", out IReadOnlyList<Player>? cached) && cached is not null)
-        {
-            _logger.LogInformation("Cache HIT  all players");
-            return cached;
-        }
-
-        _logger.LogInformation("Cache MISS all players — loading from database");
-        var players = _players.toList();
-
-        _cache.Set("AllPlayersKey", players, TimeSpan.FromSeconds(60));
-
-        return players;
-    }*/
-
+  
     public void DeletePlayer(int playerId)
     {
         var player = _context.Players.FirstOrDefault(p => p.Id == playerId);
@@ -81,5 +169,5 @@ public class DBPlayerRepository : IPlayerRepository
             .GroupBy(player => player.Score)
             .OrderByDescending(group => group.Key);
     }
-
+    */
 }

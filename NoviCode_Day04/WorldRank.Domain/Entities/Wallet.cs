@@ -8,7 +8,8 @@ public class Wallet : IWallet
 	public Currency Currency { get; }
     public int Id { get; }
     public int PlayerId { get; }
-	public decimal Balance { get; private set; }
+    public Player Player { get; private set; } = null!;
+    public decimal Balance { get; private set; }
 	public bool IsBlocked { get; private set; }
 
 	public Wallet(int id, int playerId, Currency currency, decimal balance, bool isBlocked = false)

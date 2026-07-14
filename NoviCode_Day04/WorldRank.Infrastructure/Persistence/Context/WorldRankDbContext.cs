@@ -38,6 +38,11 @@ namespace WorldRank.Infrastructure.Persistence.Context
                 x.Property(w => w.Balance).HasColumnType("decimal(18,2)").IsRequired();
                 x.Property(w => w.Currency).IsRequired();
                 x.Property(w => w.IsBlocked).IsRequired();
+
+                x.HasOne(w => w.Player)
+                .WithMany(p => p.Wallets)          // αν δεν πρόσθεσες το Wallets στο Player, βάλε .WithMany() χωρίς όρισμα
+                .HasForeignKey(w => w.PlayerId)
+                .OnDelete(DeleteBehavior.Cascade); //
             });
             base.OnModelCreating(modelBuilder);
         }
