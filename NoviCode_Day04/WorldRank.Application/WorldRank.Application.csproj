@@ -1,6 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <Compile Remove="Abstractions%27\**" />
+    <EmbeddedResource Remove="Abstractions%27\**" />
+    <None Remove="Abstractions%27\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\WorldRank.Domain\WorldRank.Domain.csproj" />
   </ItemGroup>
 

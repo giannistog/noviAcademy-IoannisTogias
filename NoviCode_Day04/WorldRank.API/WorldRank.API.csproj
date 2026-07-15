@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="IPlayerService.cs" />
+    <Compile Remove="IWalletService.cs" />
     <Compile Remove="WeatherForecast.cs" />
   </ItemGroup>
 

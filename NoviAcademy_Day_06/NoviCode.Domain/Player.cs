@@ -14,6 +14,15 @@ public class Player
 		Id = Guid.NewGuid();
 		Name = name;
 	}
+	public Player(Guid Id, string Name, int Score)
+	{
+		Id = Id;
+		Name = Name;
+		Score = Score;
+
+	}
+
+
 
 	// Parameterless ctor used only by EF Core to materialise rows (properties set via backing fields).
 	private Player()

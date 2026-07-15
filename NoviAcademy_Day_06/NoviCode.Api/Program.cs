@@ -1,9 +1,12 @@
 using System.Text.Json.Serialization;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using NLog.Extensions.Logging;
 using NoviCode;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+public 
 
 // Logging via NLog (same nlog.config layout as the Console app).
 builder.Logging.ClearProviders();

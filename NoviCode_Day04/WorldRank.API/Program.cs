@@ -8,6 +8,8 @@ using WorldRank.Application.Strategies;
 using WorldRank.Infrastructure.Caching;
 using WorldRank.Infrastructure.Persistence.Context;
 using WorldRank.Infrastructure.Repositories;
+using WorldRank.Application;    
+using WorldRank.Infrastructure;
 //using WorldRank.API;
 
 
@@ -39,6 +41,9 @@ builder.Services.AddSingleton<IFundsStrategy, ForceSubtractFundsStrategy>();
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<ICache, MemoryCacheStore>();
 
+// CQRS + Decorator wiring (Day 7 exercise)
+builder.Services.AddApplicationModule();
+builder.Services.AddInfrastructureModule();
 // Accept/emit enums (e.g. Currency) as their string names, not numbers.
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
