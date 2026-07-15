@@ -17,6 +17,7 @@ namespace NoviCode.Persistence.Commands.Players
         public async Task Persist(Player player)
         {
             _appDbContext.Add(player);
+            
             await _appDbContext.SaveChangesAsync();
         }
     }

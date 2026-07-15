@@ -7,5 +7,5 @@ namespace NoviCode;
 public static class DbConnection
 {
 	public const string ConnectionString =
-		"";
+        "Server=localhost;Database=WorldRank;Integrated Security=true;TrustServerCertificate=true";
 }
