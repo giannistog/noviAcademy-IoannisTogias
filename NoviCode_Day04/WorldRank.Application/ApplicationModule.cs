@@ -34,6 +34,34 @@ public static class ApplicationModule
                 sp.GetRequiredService<GetAllPlayersQueryHandler>(),
                 sp.GetRequiredService<ILogger<LoggingQueryDecorator<GetAllPlayersQuery, IEnumerable<Player>>>>()));
 
+        services.AddScoped<CreateWalletCommandHandler>();
+
+        services.AddScoped<ICommandHandler<CreateWalletCommand, Wallet>>(sp =>
+            new LoggingDecorator<CreateWalletCommand, Wallet>(
+                sp.GetRequiredService<CreateWalletCommandHandler>(),
+                sp.GetRequiredService<ILogger<LoggingDecorator<CreateWalletCommand, Wallet>>>()));
+
+        services.AddScoped<DepositCommandHandler>();
+
+        services.AddScoped<ICommandHandler<DepositCommand, Wallet>>(sp =>
+            new LoggingDecorator<DepositCommand, Wallet>(
+                sp.GetRequiredService<DepositCommandHandler>(),
+                sp.GetRequiredService<ILogger<LoggingDecorator<DepositCommand, Wallet>>>()));
+
+        services.AddScoped<BlockWalletCommandHandler>();
+
+        services.AddScoped<ICommandHandler<BlockWalletCommand, Wallet>>(sp =>
+            new LoggingDecorator<BlockWalletCommand, Wallet>(
+                sp.GetRequiredService<BlockWalletCommandHandler>(),
+                sp.GetRequiredService<ILogger<LoggingDecorator<BlockWalletCommand, Wallet>>>()));
+
+        services.AddScoped<GetWalletByIdQueryHandler>();
+
+        services.AddScoped<IQueryHandler<GetWalletByIdQuery, Wallet?>>(sp =>
+            new LoggingQueryDecorator<GetWalletByIdQuery, Wallet?>(
+                sp.GetRequiredService<GetWalletByIdQueryHandler>(),
+                sp.GetRequiredService<ILogger<LoggingQueryDecorator<GetWalletByIdQuery, Wallet?>>>()));
+
         return services;
     }
 }

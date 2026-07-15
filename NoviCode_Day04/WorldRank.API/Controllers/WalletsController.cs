@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WorldRank.Api.Dtos;
-using WorldRank.Application.Services;
+using WorldRank.Application.Abstractions;
+using WorldRank.Application.Commands;
+using WorldRank.Application.Queries;
+using WorldRank.Domain.Entities;
 using WorldRank.Domain.Exceptions;
 
 namespace WorldRank.Api.Controllers;
@@ -9,11 +12,21 @@ namespace WorldRank.Api.Controllers;
 [Route("wallets")]
 public class WalletsController : ControllerBase
 {
-    private readonly WalletService _walletService;
+    private readonly ICommandHandler<CreateWalletCommand, Wallet> _createWallet;
+    private readonly ICommandHandler<DepositCommand, Wallet> _deposit;
+    private readonly ICommandHandler<BlockWalletCommand, Wallet> _block;
+    private readonly IQueryHandler<GetWalletByIdQuery, Wallet?> _getWalletById;
 
-    public WalletsController(WalletService walletService)
+    public WalletsController(
+        ICommandHandler<CreateWalletCommand, Wallet> createWallet,
+        ICommandHandler<DepositCommand, Wallet> deposit,
+        ICommandHandler<BlockWalletCommand, Wallet> block,
+        IQueryHandler<GetWalletByIdQuery, Wallet?> getWalletById)
     {
-        _walletService = walletService;
+        _createWallet = createWallet;
+        _deposit = deposit;
+        _block = block;
+        _getWalletById = getWalletById;
     }
 
     [HttpPost]
@@ -21,7 +34,8 @@ public class WalletsController : ControllerBase
     {
         try
         {
-            var wallet = await _walletService.CreateWallet(request.PlayerId, request.Currency, request.InitialBalance, ct);
+            var wallet = await _createWallet.Handle(
+                new CreateWalletCommand(request.PlayerId, request.Currency, request.InitialBalance), ct);
             var response = WalletResponse.FromDomain(wallet);
 
             return CreatedAtAction(nameof(GetWalletById), new { id = response.Id }, response);
@@ -39,7 +53,7 @@ public class WalletsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetWalletById(int id, CancellationToken ct)
     {
-        var wallet = await _walletService.GetWalletById(id, ct);
+        var wallet = await _getWalletById.Handle(new GetWalletByIdQuery(id), ct);
 
         if (wallet is null)
             return NotFound();
@@ -52,7 +66,7 @@ public class WalletsController : ControllerBase
     {
         try
         {
-            var wallet = await _walletService.DepositAsync(id, request.Amount, ct);
+            var wallet = await _deposit.Handle(new DepositCommand(id, request.Amount), ct);
             return Ok(WalletResponse.FromDomain(wallet));
         }
         catch (WalletNotFoundException ex)
@@ -62,6 +76,20 @@ public class WalletsController : ControllerBase
         catch (WalletException ex)
         {
             return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("{id:int}/block")]
+    public async Task<IActionResult> Block(int id, CancellationToken ct)
+    {
+        try
+        {
+            var wallet = await _block.Handle(new BlockWalletCommand(id), ct);
+            return Ok(WalletResponse.FromDomain(wallet));
+        }
+        catch (WalletNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
         }
     }
 }
