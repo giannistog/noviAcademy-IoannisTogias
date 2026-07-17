@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="NoviCode.Api/NoviCode.Api.csproj" />
+  <Project Path="NoviCode.Application/NoviCode.Application.csproj" />
+  <Project Path="NoviCode.Domain/NoviCode.Domain.csproj" />
+  <Project Path="NoviCode.Gateway/NoviCode.Gateway.csproj" Id="2c7c9c47-f4e3-4aa8-aa2a-96b3c89c3d6d" />
+  <Project Path="NoviCode.Infrastructure/NoviCode.Infrastructure.csproj" />
+  <Project Path="NoviCode.Test/NoviCode.Test.csproj" Id="1ff71de5-f57e-49b1-b047-5792d2608f32" />
+</Solution>
